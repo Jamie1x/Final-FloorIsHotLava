@@ -42,6 +42,7 @@ var highScoreValue = 0;
 var play;
 var menu;
 var over;
+var winner;
 var stats;
 var canvas;
 var assets;
@@ -120,10 +121,8 @@ function setupRenderer() {
 }
 // Setup main camera for the scene
 function setupCamera() {
-    camera = new PerspectiveCamera(35, config.Screen.RATIO, 0.1, 100);
+    camera = new PerspectiveCamera(35, config.Screen.RATIO, 0.1, 200);
     camera.name = "Main Camera";
-    //camera.position.set(0, 10, 30);
-    //camera.lookAt(new Vector3(0, 0, 0));
     console.log("Finished setting up Camera...");
 }
 function changeScene() {
@@ -146,6 +145,12 @@ function changeScene() {
             over = new scenes.Over();
             scene = over;
             console.log("Starting OVER Scene");
+            break;
+        case config.Scene.WINNER:
+            // show the game OVER scene
+            winner = new scenes.Winner();
+            scene = winner;
+            console.log("Starting winner Scene");
             break;
     }
 }

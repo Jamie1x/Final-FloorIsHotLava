@@ -444,6 +444,15 @@ var scenes;
                     this.scoreLabel.text = "SCORE: " + this.score;
                     this.remove(event);
                 }
+                if (event.name === "Finish") {
+                    // Exit Pointer Lock
+                    document.exitPointerLock();
+                    this.children = []; // an attempt to clean up
+                    this._isGamePaused = true;
+                    // Play the Game Win Scene
+                    currentScene = config.Scene.WINNER;
+                    changeScene();
+                }
             }.bind(this));
             //reset coin when it hits the lava
             this.ground.addEventListener('collision', function (event) {
