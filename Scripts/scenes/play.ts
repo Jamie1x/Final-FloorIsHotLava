@@ -20,14 +20,17 @@ module scenes {
         private stats: Stats;
         private blocker: HTMLElement;
         private instructions: HTMLElement;
+
         private spotLight: SpotLight;
         private ambientLight: AmbientLight;
+
         private groundGeometry: CubeGeometry;
         private groundPhysicsMaterial: Physijs.Material;
         private groundMaterial: PhongMaterial;
         private ground: Physijs.Mesh;
         private groundTexture: Texture;
         private groundTextureNormal: Texture;
+
         private WallTexture: Texture;
         private WallTextureNormal: Texture;
         private WallMaterial: PhongMaterial;
@@ -46,6 +49,7 @@ module scenes {
         private bWallGeometry: CubeGeometry;
         private bWallPhysicsMaterial: Physijs.Material;
         private bWall: Physijs.Mesh;
+
         private ball: Physijs.Mesh;
         private clock: Clock;
         private playerGeometry: CubeGeometry;
@@ -67,10 +71,10 @@ module scenes {
         private scoreLabel: createjs.Text;
         private healthLabel: createjs.Text;
         private score: number;
-
         private coins: Physijs.ConcaveMesh[];
         private coinCount: number = 10;
         private blockCount: number = 10;
+        private gameOver: boolean;
 
         /**
          * @constructor
@@ -155,7 +159,7 @@ module scenes {
             this.stage.addChild(this.scoreLabel);
             console.log("Added Score Label to stage");
         }
-        
+
         private addLight(): void {
             /*// Spot Light
             this.spotLight = new SpotLight(0xffffff);
@@ -178,7 +182,7 @@ module scenes {
             this.ambientLight = new AmbientLight(0xf0f0f0);
             this.add(this.ambientLight);
         }
-        
+
         private addGround(): void {
             // Ground Object
             this.groundTexture = new THREE.TextureLoader().load('../../Assets/images/lava.png');
@@ -204,7 +208,7 @@ module scenes {
             this.ground.name = "Lava";
             this.add(this.ground);
         }
-        
+
         private addWalls(): void {
             //wall material
             this.WallTexture = new THREE.TextureLoader().load('../../Assets/images/Wall.jpg');
@@ -270,7 +274,7 @@ module scenes {
             this.bWall.name = "Wall";
             this.add(this.bWall);
         }
-        
+
         private addPlayer(): void {
             // Player Object
             this.playerGeometry = new BoxGeometry(2, 4, 2);
@@ -283,7 +287,7 @@ module scenes {
             this.player.name = "Player";
             this.add(this.player);
         }
-        
+
         private addStartPlatform(): void {
             //startPlatform
             var startPlatform = new Physijs.ConvexMesh(
@@ -295,7 +299,7 @@ module scenes {
             startPlatform.name = "Ground";
             this.add(startPlatform);
         }
-        
+
         private addEndPlatform(): void {
             //end
             var end = new Physijs.ConvexMesh(
@@ -379,7 +383,7 @@ module scenes {
                 this.mouseControls.enabled = true;
                 this.blocker.style.display = 'none';
             } else {
-                if (this.health <= 0) {
+                if (this.gameOver) {
                     this.blocker.style.display = 'none';
                     document.removeEventListener('pointerlockchange', this.pointerLockChange.bind(this), false);
                     document.removeEventListener('mozpointerlockchange', this.pointerLockChange.bind(this), false);
@@ -555,6 +559,7 @@ module scenes {
                         document.exitPointerLock();
                         this.children = []; // an attempt to clean up
                         this._isGamePaused = true;
+                        this.gameOver = true;
 
                         // Play the Game Over Scene
                         currentScene = config.Scene.OVER;
@@ -572,12 +577,14 @@ module scenes {
                     this.score++;
                     this.scoreLabel.text = "SCORE: " + this.score;
                     this.remove(event);
+                    this.setCoinPosition(event);
                 }
-                if (event.name === "Finish"){
+                if (event.name === "Finish") {
                     // Exit Pointer Lock
                     document.exitPointerLock();
-                    this.children = []; // an attempt to clean up
+                    this.children = [];
                     this._isGamePaused = true;
+                    this.gameOver = true;
                     // Play the Game Win Scene
                     currentScene = config.Scene.WINNER;
                     changeScene();

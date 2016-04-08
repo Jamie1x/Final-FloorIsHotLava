@@ -274,7 +274,7 @@ var scenes;
                 this.blocker.style.display = 'none';
             }
             else {
-                if (this.health <= 0) {
+                if (this.gameOver) {
                     this.blocker.style.display = 'none';
                     document.removeEventListener('pointerlockchange', this.pointerLockChange.bind(this), false);
                     document.removeEventListener('mozpointerlockchange', this.pointerLockChange.bind(this), false);
@@ -426,6 +426,7 @@ var scenes;
                         document.exitPointerLock();
                         this.children = []; // an attempt to clean up
                         this._isGamePaused = true;
+                        this.gameOver = true;
                         // Play the Game Over Scene
                         currentScene = config.Scene.OVER;
                         changeScene();
@@ -443,12 +444,14 @@ var scenes;
                     this.score++;
                     this.scoreLabel.text = "SCORE: " + this.score;
                     this.remove(event);
+                    this.setCoinPosition(event);
                 }
                 if (event.name === "Finish") {
                     // Exit Pointer Lock
                     document.exitPointerLock();
-                    this.children = []; // an attempt to clean up
+                    this.children = [];
                     this._isGamePaused = true;
+                    this.gameOver = true;
                     // Play the Game Win Scene
                     currentScene = config.Scene.WINNER;
                     changeScene();
